@@ -38,6 +38,11 @@ const Caesar = (() => {
 
   // Default hliðrun, uppfært af "shift"
   let shift = 3;
+  const range = document.querySelector('input[type=range]');
+  range.addEventListener('input', (e) => {
+    const result = document.querySelector('.shiftvalue');
+    result.textContent = e.target.value;
+  });
 
   function init(el) {
     // Setja event handlera á viðeigandi element
