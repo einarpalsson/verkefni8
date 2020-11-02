@@ -15,7 +15,8 @@
  */
 function encode(str, n, alphabet) {
   let LETTERS_arr = alphabet.split("");
-  let newStr = str.split("");
+  let newStrUpp = str.toLocaleUpperCase();
+  let newStr = newStrUpp.split("");
   let tester = [];
   for (let i = 0; i < newStr.length; i++) {
     for (let j = 0; j < LETTERS_arr.length; j++) {
@@ -41,7 +42,8 @@ function encode(str, n, alphabet) {
  */
 function decode(str, n, alphabet = '') {
   let LETTERS_arr = alphabet.split("");
-  let newStr = str.split("");
+  let newStrUpp = str.toLocaleUpperCase();
+  let newStr = newStrUpp.split("");
   let tester = [];
 
   for (let i = 0; i < newStr.length; i++) {
@@ -57,14 +59,16 @@ function decode(str, n, alphabet = '') {
   return str;
 }
 
+let eValue;
 const Caesar = (() => {
   // Default stafróf, uppfært þegar slegið inn í "alphabet"
   let alphabet = 'AÁBDÐEÉFGHIÍJKLMNOÓPRSTUÚVXYÝÞÆÖ';
+  const range = document.querySelector('input[type=range]');
   let test = document.getElementById('alphabet');
 
-  test.onkeyup = function(){
-    document.getElementById('result').innerHTML = test.value;
-  }
+  // test.onkeyup = function(){
+  //   document.getElementById('result').innerHTML = test.value;
+  // }
 
 
   // Default type, uppfært af radio input
@@ -76,6 +80,12 @@ const Caesar = (() => {
 
   // Default hliðrun, uppfært af "shift"
   let shift = 3;
+
+  range.addEventListener('input', (e) => {
+    eValue = parseInt(e.target.value);
+    shift = document.querySelector('.shiftValue').innerHTML = e.target.value;
+    console.log(shift);
+  });
 
   function init(el) {
     // Setja event handlera á viðeigandi element
