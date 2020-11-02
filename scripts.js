@@ -13,8 +13,22 @@
  * @param {string} alphabet Stafróf sem afkóða á út frá
  * @returns {string} Upprunalegi strengurinn hliðraður um n til hægri
  */
-function encode(str, n, alphabet = '') {
-  return '';
+function encode(str, n, alphabet) {
+  let LETTERS_arr = alphabet.split("");
+  let newStr = str.split("");
+  let tester = [];
+  for (let i = 0; i < newStr.length; i++) {
+    for (let j = 0; j < LETTERS_arr.length; j++) {
+      if (newStr[i] === LETTERS_arr[j] && (j + n) <= 31) {
+        tester[i] = LETTERS_arr[j + n];
+      } else if (newStr[i] === LETTERS_arr[j] && (j + n) > 31) {
+        tester[i] = LETTERS_arr[j - (32 - n)];
+      }
+    }
+  }
+
+  str = tester.join("");
+  return str;
 }
 
 /**
@@ -26,26 +40,49 @@ function encode(str, n, alphabet = '') {
  * @returns {string} Upprunalegi strengurinn hliðraður um n til vinstri
  */
 function decode(str, n, alphabet = '') {
-  return '';
+  let LETTERS_arr = alphabet.split("");
+  let newStr = str.split("");
+  let tester = [];
+
+  for (let i = 0; i < newStr.length; i++) {
+    for (let j = 0; j < LETTERS_arr.length; j++) {
+      if (newStr[i] === LETTERS_arr[j] && j - n >= 0) {
+        tester[i] = LETTERS_arr[j - n];
+      } else if (newStr[i] === LETTERS_arr[j] && j - n < 0) {
+        tester[i] = LETTERS_arr[j + (32 - n)];
+      }
+    }
+  }
+  str = tester.join("");
+  return str;
 }
 
 const Caesar = (() => {
   // Default stafróf, uppfært þegar slegið inn í "alphabet"
   let alphabet = 'AÁBDÐEÉFGHIÍJKLMNOÓPRSTUÚVXYÝÞÆÖ';
+  let test = document.getElementById('alphabet');
+
+  test.onkeyup = function(){
+    document.getElementById('result').innerHTML = test.value;
+  }
+
 
   // Default type, uppfært af radio input
   let type = 'encode';
+  if (document.getElementById('encode').checked) {
+  } else if (document.getElementById('decode').checked) {
+    type = 'decode';
+  }
 
   // Default hliðrun, uppfært af "shift"
   let shift = 3;
-  const range = document.querySelector('input[name=shift]');
-  range.addEventListener('input', (e) => {
-    let test = document.getElementsByClassName('shiftvalue').innerHTML = 'yoo';
-    console.log((e.target.value))
-  });
 
   function init(el) {
     // Setja event handlera á viðeigandi element
+    let testV2 = document.getElementById('input');
+    testV2.onkeyup = function(){
+      document.getElementById('result').innerHTML = encode(testV2.value, shift, alphabet);
+    }
   }
 
   return {
