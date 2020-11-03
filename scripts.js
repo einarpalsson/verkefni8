@@ -22,10 +22,10 @@ function encode(str, m, alphabet) {
   const tester = [];
   for (let i = 0; i < newStr.length; i += 1) {
     for (let j = 0; j < lettersArr.length; j += 1) {
-      if (newStr[i] === lettersArr[j] && (j + n) <= 31) {
+      if (newStr[i] === lettersArr[j] && (j + n) <= alphabet.length - 1) {
         tester[i] = lettersArr[j + n];
-      } else if (newStr[i] === lettersArr[j] && (j + n) > 31) {
-        tester[i] = lettersArr[j - (32 - n)];
+      } else if (newStr[i] === lettersArr[j] && (j + n) > alphabet.length - 1) {
+        tester[i] = lettersArr[j - (alphabet.length - n)];
       }
     }
   }
@@ -54,7 +54,7 @@ function decode(str, m, alphabet) {
       if (newStr[i] === lettersArr[j] && j - n >= 0) {
         tester[i] = lettersArr[j - n];
       } else if (newStr[i] === lettersArr[j] && j - n < 0) {
-        tester[i] = lettersArr[j + (32 - n)];
+        tester[i] = lettersArr[j + (alphabet.length - n)];
       }
     }
   }
@@ -63,9 +63,6 @@ function decode(str, m, alphabet) {
 }
 
 const Caesar = (() => {
-  // Default stafróf, uppfært þegar slegið inn í "alphabet"
-  let alphabet = 'AÁBDÐEÉFGHIÍJKLMNOÓPRSTUÚVXYÝÞÆÖ';
-
   // Default type, uppfært af radio input
   let type = 'encode';
 
@@ -78,6 +75,7 @@ const Caesar = (() => {
 
     clearTimeout(timeout);
     timeout = setTimeout(() => {
+      const alphabet = document.getElementById('alphabet').value.toLocaleUpperCase();
       if (type === 'encode') {
         document.getElementById('result').innerHTML = encode(testV2.value, shift, alphabet);
       } else {
@@ -89,11 +87,13 @@ const Caesar = (() => {
   function init() {
     // Setja event handlera á viðeigandi element
 
-    // ALPHABET
+    // ALPHABET 'AÁBDÐEÉFGHIÍJKLMNOÓPRSTUÚVXYÝÞÆÖ'
     const alph = document.getElementById('alphabet');
 
-    alph.addEventListener('keyup', () => {
-      alphabet = alph.value;
+    alph.addEventListener('keyup', (e) => {
+      const letterCount = e.target.value.length;
+      const shiftEl = document.getElementById('shift');
+      shiftEl.max = letterCount;
       changeString();
     });
 
@@ -123,10 +123,6 @@ const Caesar = (() => {
       document.querySelector('.shiftValue').innerHTML = e.target.value;
       changeString();
     });
-
-    let maxValue = document.getElementById('shift');
-    maxValue = maxValue.max;
-    maxValue.max = alphabet.length;
 
     // RESULT
     const defaultInput = document.getElementById('input');
