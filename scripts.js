@@ -13,7 +13,9 @@
  * @param {string} alphabet Stafróf sem afkóða á út frá
  * @returns {string} Upprunalegi strengurinn hliðraður um n til hægri
  */
-function encode(str, n, alphabet) {
+
+function encode(str, m, alphabet) {
+  let n = parseInt(m);
   let LETTERS_arr = alphabet.split("");
   let newStrUpp = str.toLocaleUpperCase();
   let newStr = newStrUpp.split("");
@@ -32,6 +34,7 @@ function encode(str, n, alphabet) {
   return str;
 }
 
+
 /**
  * Afkóðar streng með því að hliðra honum um n stök.
  *
@@ -40,59 +43,107 @@ function encode(str, n, alphabet) {
  * @param {string} alphabet Stafróf sem afkóða á út frá
  * @returns {string} Upprunalegi strengurinn hliðraður um n til vinstri
  */
-function decode(str, n, alphabet = '') {
+function decode(str, m, alphabet) {
+  let n = parseInt(m);
   let LETTERS_arr = alphabet.split("");
   let newStrUpp = str.toLocaleUpperCase();
   let newStr = newStrUpp.split("");
   let tester = [];
 
-  for (let i = 0; i < newStr.length; i++) {
-    for (let j = 0; j < LETTERS_arr.length; j++) {
-      if (newStr[i] === LETTERS_arr[j] && j - n >= 0) {
-        tester[i] = LETTERS_arr[j - n];
-      } else if (newStr[i] === LETTERS_arr[j] && j - n < 0) {
-        tester[i] = LETTERS_arr[j + (32 - n)];
-      }
+for (let i = 0; i < newStr.length; i++) {
+  for (let j = 0; j < LETTERS_arr.length; j++) {
+    if (newStr[i] === LETTERS_arr[j] && j - n >= 0) {
+      tester[i] = LETTERS_arr[j - n];
+    } else if (newStr[i] === LETTERS_arr[j] && j - n < 0) {
+      tester[i] = LETTERS_arr[j + (32 - n)];
     }
   }
-  str = tester.join("");
-  return str;
+}
+str = tester.join("");
+return str;
 }
 
-let eValue;
 const Caesar = (() => {
   // Default stafróf, uppfært þegar slegið inn í "alphabet"
   let alphabet = 'AÁBDÐEÉFGHIÍJKLMNOÓPRSTUÚVXYÝÞÆÖ';
-  const range = document.querySelector('input[type=range]');
-  let test = document.getElementById('alphabet');
-
-  // test.onkeyup = function(){
-  //   document.getElementById('result').innerHTML = test.value;
-  // }
 
 
   // Default type, uppfært af radio input
   let type = 'encode';
-  if (document.getElementById('encode').checked) {
-  } else if (document.getElementById('decode').checked) {
-    type = 'decode';
-  }
 
   // Default hliðrun, uppfært af "shift"
   let shift = 3;
 
-  range.addEventListener('input', (e) => {
-    eValue = parseInt(e.target.value);
-    shift = document.querySelector('.shiftValue').innerHTML = e.target.value;
-    console.log(shift);
-  });
+
+  function changeString() {
+      let timeout;
+      let testV2 = document.getElementById('input');
+
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+          if (type === 'encode') {
+              document.getElementById('result').innerHTML = encode(testV2.value, shift, alphabet);
+          } else {
+              document.getElementById('result').innerHTML = decode(testV2.value, shift, alphabet);
+          }
+
+    })
+  }
+
 
   function init(el) {
     // Setja event handlera á viðeigandi element
-    let testV2 = document.getElementById('input');
-    testV2.onkeyup = function(){
-      document.getElementById('result').innerHTML = encode(testV2.value, shift, alphabet);
-    }
+
+      //ALPHABET
+      const alph = document.getElementById('alphabet');
+
+      alph.addEventListener('keyup', () => {
+          alphabet = alph.value;
+          changeString();
+          console.log(alphabet);
+      });
+
+      // alph.onkeyup = function() {
+      //     alphabet = alphabet.value;
+      //     changeString();
+      //     console.log(alphabet);
+      // }
+
+      //RADIO
+      const radioEncode = document.getElementById('encode');
+      radioEncode.addEventListener('click', () => {
+          type = 'encode';
+          changeString();
+          console.log(type);
+        });
+
+      const radioDecode = document.getElementById('decode');
+      radioDecode.addEventListener('click', () => {
+          type = 'decode';
+          changeString();
+          console.log(type);
+        });
+
+
+      //SHIFT
+      const range = document.querySelector('input[type=range]');
+      range.addEventListener('input', (e) => {
+          shift = document.querySelector('.shiftValue').innerHTML = e.target.value;
+          changeString();
+          console.log(shift);
+        });
+
+      let maxValue = document.getElementById('shift');
+      maxValue = maxValue.max;
+      maxValue.max = alphabet.length;
+
+
+       //RESULT
+      let defaultInput = document.getElementById('input');
+      defaultInput.addEventListener('keyup', () => {
+          changeString();
+        })
+
   }
 
   return {
